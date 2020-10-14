@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_astdoctor"
+        android:icon="@drawable/ic_local_hospital_black_24dp"
+        android:title="Assistant Doctor"></item>
+
+    <item
+        android:id="@+id/nav_patient"
+        android:icon="@drawable/ic_pregnant_woman_black_24dp"
+        android:title="Patient"></item>
+
+    <item
+        android:id="@+id/nav_chats"
+        android:icon="@drawable/ic_chat_black_24dp"
+        android:title="Chats"></item>
+
+    <item
+        android:id="@+id/nav_graph"
+        android:icon="@drawable/ic_graphic_eq_black_24dp"
+        android:title="Graph"></item>
+
+</menu>
