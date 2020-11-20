@@ -4,7 +4,10 @@ const Doctors = require("../models/doctorRegistration");
 const AstDoctors = require("../models/assistantDoctors");
 const Patients = require("../models/patients");
 const Sensed = require("../models/sensed");
-const { Mongoose } = require("mongoose");
+// const { Mongoose } = require("mongoose");
+const mailService = require("../utilities/mailer");
+
+
 
 const api = express.Router();
 
@@ -20,6 +23,20 @@ api.post("/registration", (req, res) => {
 
   doctor_regis
     .save()
+    .then((data) => {
+        mailService.transporter.sendMail(mailService.verificationEmailTemplate("k25dave@gmail.com", data.email, data._id, "doctorVerification"), (err, info) => {
+          if (err) {
+            console.log(err);
+            return err
+          }
+          if (info.messageId) {
+            console.log(info)
+            console.log(info.messageId)
+          }
+        });
+      }
+
+    )
     .then(
       res.status(200).json({
         datasaved: "data saved success",
@@ -65,6 +82,22 @@ api.post("/astDoctorReg", (req, res) => {
   saveAssistant["Doctors"].push(doctorid);
   saveAssistant
     .save()
+    .then((data) => {
+        console.log(data)
+        console.log(mailService.verificationEmailTemplate("k25dave@gmail.com", data.email, data._id, "assistantDoctorVerification"))
+        mailService.transporter.sendMail(mailService.verificationEmailTemplate("k25dave@gmail.com", data.email, data._id, "assistantDoctorVerification"), (err, info) => {
+          if (err) {
+            console.log(err);
+            return err
+          }
+          if (info.messageId) {
+            console.log(info)
+            console.log(info.messageId)
+          }
+        });
+      }
+
+    )
     .then(
       res.status(200).json({
         datasaved: "data saved success",
@@ -72,10 +105,15 @@ api.post("/astDoctorReg", (req, res) => {
       })
     )
     .then(
-      Doctors.findOneAndUpdate(
-        { _id: doctorid },
-        { $push: { assistantDoctor: saveAssistant._id } },
-        { new: true },
+      Doctors.findOneAndUpdate({
+          _id: doctorid
+        }, {
+          $push: {
+            assistantDoctor: saveAssistant._id
+          }
+        }, {
+          new: true
+        },
         (err, result) => {
           console.log(err);
           console.log(result);
@@ -102,6 +140,22 @@ api.post("/assistantPatientReg", (req, res, next) => {
 
   savePatient
     .save()
+    .then((data) => {
+        console.log(data)
+        console.log(mailService.verificationEmailTemplate("k25dave@gmail.com", data.email, data._id, "patientVerification"))
+        mailService.transporter.sendMail(mailService.verificationEmailTemplate("k25dave@gmail.com", data.pemail, data._id, "patientVerification"), (err, info) => {
+          if (err) {
+            console.log(err);
+            return err
+          }
+          if (info.messageId) {
+            console.log(info)
+            console.log(info.messageId)
+          }
+        });
+      }
+
+    )
     .then(
       res.status(200).json({
         datasaved: "data saved success",
@@ -109,10 +163,15 @@ api.post("/assistantPatientReg", (req, res, next) => {
       })
     )
     .then(
-      AstDoctors.findOneAndUpdate(
-        { _id: astDoctorId },
-        { $push: { Patients: savePatient._id } },
-        { new: true },
+      AstDoctors.findOneAndUpdate({
+          _id: astDoctorId
+        }, {
+          $push: {
+            Patients: savePatient._id
+          }
+        }, {
+          new: true
+        },
         (err, result) => {
           console.log(err);
           console.log(result);
@@ -139,22 +198,43 @@ api.post("/patientReg", (req, res) => {
 
   savePatient
     .save()
-    .then(
-      res.status(200).json({
-        datasaved: "data saved success",
-        status: "success",
-      })
+    .then((data) => {
+        console.log(data)
+        console.log(mailService.verificationEmailTemplate("k25dave@gmail.com", data.email, data._id, "patientVerification"))
+        mailService.transporter.sendMail(mailService.verificationEmailTemplate("k25dave@gmail.com", data.pemail, data._id, "patientVerification"), (err, info) => {
+          if (err) {
+            console.log(err);
+            return err
+          }
+          if (info.messageId) {
+            console.log(info)
+            console.log(info.messageId)
+          }
+        });
+      }
+
     )
     .then(
-      Doctors.findOneAndUpdate(
-        { _id: doctorid },
-        { $push: { Patients: savePatient._id } },
-        { new: true },
+      Doctors.findOneAndUpdate({
+          _id: doctorid
+        }, {
+          $push: {
+            Patients: savePatient._id
+          }
+        }, {
+          new: true
+        },
         (err, result) => {
           console.log(err);
           console.log(result);
         }
       )
+    )
+    .then(
+      res.status(200).json({
+        datasaved: "data saved success",
+        status: "success",
+      })
     )
     .catch((err) => console.log(err));
 });
@@ -165,9 +245,12 @@ api.post("/Login", (req, res) => {
     password: req.body.password,
     type: req.body.type,
   };
+
   console.log(logincred);
   if (logincred["type"] === "Doctor") {
-    Doctors.findOne({ Name: logincred["Name"] })
+    Doctors.findOne({
+        Name: logincred["Name"]
+      })
       .then((doctor) => {
         if (!doctor) {
           res.status(200).json({
@@ -178,30 +261,45 @@ api.post("/Login", (req, res) => {
             phone: null,
           });
         }
-        if (doctor.password === logincred["password"]) {
+        if (doctor.verification === true) {
+
+          if (doctor.password === logincred["password"]) {
+            res.status(200).cookie("id", doctor._id.toString()).cookie("type", "Doctor").json({
+              status: "SUCCESS",
+              message: "success",
+              id: doctor._id,
+              name: doctor.Name,
+              phone: doctor.PhoneNumber.toString(),
+            });
+          } else {
+            res.status(200).json({
+              status: "FAILURE",
+              message: "password incorrect",
+              id: null,
+              name: null,
+              phone: null,
+            });
+          }
+
+        } else if (doctor.verification === false) {
           res.status(200).json({
-            status: "SUCCESS",
-            message: "success",
-            id: doctor._id,
-            name: doctor.Name,
-            phone: doctor.PhoneNumber.toString(),
-          });
-        } else {
-          res.status(200).json({
-            status: "FAILURE",
-            message: "password incorrect",
+            status: 403,
+            message: "unverified",
             id: null,
             name: null,
-            phone: null,
-          });
+            phone: null
+          })
         }
+
       })
       .catch((err) => {
         console.log(err);
       });
   }
   if (logincred["type"] === "assistantDoctor") {
-    AstDoctors.findOne({ Name: logincred["Name"] })
+    AstDoctors.findOne({
+        Name: logincred["Name"]
+      })
       .then((assistantDoctor) => {
         if (!assistantDoctor) {
           res.status(200).json({
@@ -212,30 +310,43 @@ api.post("/Login", (req, res) => {
             phone: null,
           });
         }
-        if (assistantDoctor.password === logincred["password"]) {
+        if (assistantDoctor.verification === true) {
+          if (assistantDoctor.password === logincred["password"]) {
+            res.status(200).cookie("id", assistantDoctor._id.toString()).cookie("type", "assistantDoctor").json({
+              status: "SUCCESS",
+              message: "success",
+              id: assistantDoctor._id,
+              name: assistantDoctor.Name,
+              phone: assistantDoctor.PhoneNumber.toString(),
+            });
+          } else {
+            res.status(200).json({
+              status: "FAILURE",
+              message: "password incorrect",
+              id: null,
+              name: null,
+              phone: null,
+            });
+          }
+        } else if (assistantDoctor.verification === false) {
           res.status(200).json({
-            status: "SUCCESS",
-            message: "success",
-            id: assistantDoctor._id,
-            name: assistantDoctor.Name,
-            phone: assistantDoctor.PhoneNumber.toString(),
-          });
-        } else {
-          res.status(200).json({
-            status: "FAILURE",
-            message: "password incorrect",
+            status: 403,
+            message: "unverified",
             id: null,
             name: null,
-            phone: null,
-          });
+            phone: null
+          })
         }
+
       })
       .catch((err) => {
         console.log(err);
       });
   }
   if (logincred["type"] === "Patients") {
-    Patients.findOne({ Name: logincred["Name"] })
+    Patients.findOne({
+        Name: logincred["Name"]
+      })
       .then((patient) => {
         if (!patient) {
           res.status(200).json({
@@ -246,23 +357,34 @@ api.post("/Login", (req, res) => {
             phone: null,
           });
         }
-        if (patient.password === logincred["password"]) {
+        if (patient.verification === true) {
+          if (patient.password === logincred["password"]) {
+            res.status(200).cookie("id", patient._id.toString()).cookie("type", "Patients").json({
+              status: "SUCCESS",
+              message: "success",
+              id: patient._id,
+              name: patient.Name,
+              phone: patient.PhoneNumber.toString(),
+            });
+          } else {
+            res.status(200).json({
+              status: "FAILURE",
+              message: "password incorrect",
+              id: null,
+              name: null,
+              phone: null,
+            });
+          }
+        } else if (patient.verification === false) {
           res.status(200).json({
-            status: "SUCCESS",
-            message: "success",
-            id: patient._id,
-            name: patient.Name,
-            phone: patient.PhoneNumber.toString(),
-          });
-        } else {
-          res.status(200).json({
-            status: "FAILURE",
-            message: "password incorrect",
+            status: 403,
+            message: "unverified",
             id: null,
             name: null,
-            phone: null,
-          });
+            phone: null
+          })
         }
+
       })
       .catch((err) => {
         console.log(err);
@@ -298,7 +420,9 @@ api.post("/chatpanel", async (req, res, next) => {
       if (doctor) {
         res.status(200).json(doctor);
       } else {
-        res.status(400).json({ message: "Doctor not found" });
+        res.status(400).json({
+          message: "Doctor not found"
+        });
       }
     } catch (err) {
       next(err);
@@ -312,7 +436,9 @@ api.post("/chatpanel", async (req, res, next) => {
       if (doctor) {
         res.status(200).json(doctor);
       } else {
-        res.status(400).json({ message: "Doctor not found" });
+        res.status(400).json({
+          message: "Doctor not found"
+        });
       }
     } catch (err) {
       next(err);
@@ -326,7 +452,9 @@ api.post("/chatpanel", async (req, res, next) => {
       if (doctor) {
         res.status(200).json(doctor);
       } else {
-        res.status(400).json({ message: "Doctor not found" });
+        res.status(400).json({
+          message: "Doctor not found"
+        });
       }
     } catch (err) {
       next(err);
@@ -360,12 +488,17 @@ api.post("/getpatient", async (req, res, next) => {
             pemail: doctor["Patients"][0].pemail,
             dname: doctor.Name,
             demail: doctor.email,
+            assistantDoctorVerification
           });
         } else {
-          res.status(400).json({ message: "No Patients found." });
+          res.status(400).json({
+            message: "No Patients found."
+          });
         }
       } else {
-        res.status(400).json({ message: "No Patients found." });
+        res.status(400).json({
+          message: "No Patients found."
+        });
       }
     } catch (err) {
       next(err);
@@ -385,10 +518,14 @@ api.post("/getpatient", async (req, res, next) => {
             demail: doctor.email,
           });
         } else {
-          res.status(400).json({ message: "No Patients found." });
+          res.status(400).json({
+            message: "No Patients found."
+          });
         }
       } else {
-        res.status(400).json({ message: "No Patients found." });
+        res.status(400).json({
+          message: "No Patients found."
+        });
       }
     } catch (err) {
       next(err);
@@ -396,8 +533,8 @@ api.post("/getpatient", async (req, res, next) => {
   } else if (response.type === "Patients") {
     try {
       const doctor = await Patients.findOne({
-        _id: response.id,
-      })
+          _id: response.id,
+        })
         .populate("Doctors")
         .populate("assistantDoctor");
       console.log(doctor);
@@ -418,12 +555,123 @@ api.post("/getpatient", async (req, res, next) => {
           pemail: doctor.pemail,
         });
       } else {
-        res.status(400).json({ message: "No Patients found." });
+        res.status(400).json({
+          message: "No Patients found."
+        });
       }
     } catch (err) {
       next(err);
     }
   }
 });
+
+
+api.get("/doctorVerification/:id", (req, res) => {
+  const doctorId = {
+    id: req.params.id
+  }
+  Doctors.findByIdAndUpdate({
+    _id: doctorId.id
+  }, {
+    verification: true
+  }, {
+    new: true
+  }).then((data) => {
+    if (data.verification) {
+      res.render("../views/verification")
+    } else {
+      res.send("Link Invalid")
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
+});
+
+api.get("/patientVerification/:id", (req, res) => {
+  const patientId = {
+    id: req.params.id
+  }
+  Patients.findByIdAndUpdate({
+    _id: patientId.id
+  }, {
+    verification: true
+  }, {
+    new: true
+  }).then((data) => {
+    if (data.verification) {
+      res.render("../views/verification")
+    } else {
+      res.send("Link Invalid")
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
+})
+
+api.get("/assistantDoctorVerification/:id", (req, res) => {
+  const assistantDoctorId = {
+    id: req.params.id
+  }
+  AstDoctors.findByIdAndUpdate({
+    _id: assistantDoctorId.id
+  }, {
+    verification: true
+  }, {
+    new: true
+  }).then((data) => {
+    if (data.verification) {
+      res.render("../views/verification")
+    } else {
+      res.send("Link Invalid")
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
+})
+
+api.get("/getDetails", (req, res) => {
+  const id = req.cookies.id
+  const type = req.cookies.type
+  if (type === "Doctor") {
+    Doctors.findById({
+      _id: id
+    }).populate("Patients", ["Name", "date_of_birth", "PhoneNumber", "Disease", "healthDescription", "pemail", "verification"]).populate("assistantDoctor", ["Name", "date_of_birth", "doctor_license_number", "PhoneNumber", "email"]).then((data) => {
+      console.log(data)
+      res.render("../views/info", {
+        type : "Doctor",
+        info : data
+      })
+      
+    });
+  }
+  if (type === "assistantDoctor") {
+    AstDoctors.findById({
+      _id: id
+    }).populate("Patients", ["Name", "date_of_birth", "PhoneNumber", "Disease", "healthDescription", "pemail", "verification"]).populate("Doctors", ["Name", "date_of_birth", "doctor_license_number", "PhoneNumber", "email"]).then((data) => {
+      console.log(data)
+      res.render("../views/info", {
+        type: "assistantDoctor",
+        info : data
+      })
+      
+    });
+  }
+  if (type === "Patients") {
+    Patients.findById({
+      _id: id
+    }).populate("Doctors", ["Name", "date_of_birth", "doctor_license_number", "PhoneNumber", "email"]).populate("assistantDoctors", ["Name", "date_of_birth", "doctor_license_number", "PhoneNumber", "email"]).then((data) => {
+      console.log(data)
+      res.render("../views/info", {
+        type : "Patients",
+        info : data
+      })
+  
+    });
+  }
+})
+
+api.get("/loginPage",(req,res)=>{
+  res.render("../views/login")
+})
 
 module.exports = api;

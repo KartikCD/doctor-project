@@ -11,6 +11,10 @@ const doctorModels = new mongoose.Schema({
   assistantDoctor: [
     { type: mongoose.Schema.Types.ObjectId, ref: "AstDoctors" },
   ],
+  verification : {
+    type : Boolean,
+    default : false
+  }
 });
 
 module.exports = Doctors = mongoose.model("Doctors", doctorModels);

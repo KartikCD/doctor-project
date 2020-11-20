@@ -3,9 +3,14 @@ const app = express();
 const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const routes = require("./routes/routes");
+const cookieParser = require("cookie-parser")
+
+app.set("view engine","ejs")
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(cookieParser())
 
 var DBCONFIG = "mongodb://localhost/CHAT";
 

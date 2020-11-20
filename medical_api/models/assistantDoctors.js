@@ -8,6 +8,10 @@ const assistantDoctor = new mongoose.Schema({
   PhoneNumber: Number,
   password: String,
   Patients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Patients" }],
+  verification : {
+    type : Boolean,
+    default : false
+  },
   Doctors: [
     { type: mongoose.Schema.Types.ObjectId, ref: "Doctors", default: [] },
   ],
