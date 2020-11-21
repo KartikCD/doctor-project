@@ -11,16 +11,27 @@ const mailService = require("../utilities/mailer");
 
 const api = express.Router();
 
-api.post("/registration", (req, res) => {
-  const doctor_regis = new Doctors({
+api.post("/registration", async (req, res) => {
+  const details = {
     Name: req.body.Name,
     date_of_birth: req.body.date_of_birth,
     doctor_license_number: req.body.doctor_license_number,
     PhoneNumber: req.body.PhoneNumber,
     password: req.body.password,
     email: req.body.email,
-  });
-
+  }
+  
+  
+  const checkForDuplicate = await Doctors.exists({
+    email : req.body.email
+  })
+  if(checkForDuplicate === true){
+    res.status(200).json({
+      datasaved : "Email Already Exist",
+      status : "fail"
+    })    
+  } else {
+    const doctor_regis = new Doctors();
   doctor_regis
     .save()
     .then((data) => {
@@ -44,6 +55,10 @@ api.post("/registration", (req, res) => {
       })
     )
     .catch((err) => console.log(err));
+
+  }
+
+  
 });
 
 api.post("/sensedData", (req, res) => {
@@ -241,7 +256,7 @@ api.post("/patientReg", (req, res) => {
 
 api.post("/Login", (req, res) => {
   const logincred = {
-    Name: req.body.Name,
+    email: req.body.email,
     password: req.body.password,
     type: req.body.type,
   };
@@ -249,7 +264,7 @@ api.post("/Login", (req, res) => {
   console.log(logincred);
   if (logincred["type"] === "Doctor") {
     Doctors.findOne({
-        Name: logincred["Name"]
+        email: logincred["email"]
       })
       .then((doctor) => {
         if (!doctor) {
@@ -298,7 +313,7 @@ api.post("/Login", (req, res) => {
   }
   if (logincred["type"] === "assistantDoctor") {
     AstDoctors.findOne({
-        Name: logincred["Name"]
+        email: logincred["email"]
       })
       .then((assistantDoctor) => {
         if (!assistantDoctor) {
@@ -345,7 +360,7 @@ api.post("/Login", (req, res) => {
   }
   if (logincred["type"] === "Patients") {
     Patients.findOne({
-        Name: logincred["Name"]
+        pemail: logincred["email"]
       })
       .then((patient) => {
         if (!patient) {

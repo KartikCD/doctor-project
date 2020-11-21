@@ -1,0 +1,26 @@
+<h2>Assitant Doctors</h2>
+    <table class="table-2">
+        <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>DOB</th>
+            <th>Doctor License Number</th>
+        </tr>
+    <% if (info.assistantDoctor.length > 0) { %>
+        <% for( let index = 0; index < info.assistantDoctor.length; index++ ) { %>
+            
+            <tr>
+                <td><%- info.assistanceDoctor[index].Name %></td>
+                <td><%- info.assistanceDoctor[index].PhoneNumber %></td>
+                <td><%- info.assistanceDoctor[index].email %></td>
+                <td><%- info.assistanceDoctor[index].date_of_birth %></td>
+                <td><%- info.assistanceDoctor[index].doctor_license_number %> </td>
+            </tr>
+            
+        
+        <% } %>
+     
+    <% } %>
+       
+    </table>
