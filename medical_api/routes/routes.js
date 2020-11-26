@@ -687,6 +687,10 @@ api.get("/getDetails", (req, res) => {
 
 api.get("/loginPage",(req,res)=>{
   res.render("../views/login")
-})
+});
+
+api.get("/register", (req,res) => {
+  res.render("../views/doctor_registration")
+});
 
 module.exports = api;
