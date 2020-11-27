@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>info</title>
+    <link rel="stylesheet" href="../../views/table.css" />
+  </head>
+
+  <body>
+    <% if (type === "Doctor") { %>
+
+    <h2>Your Profile</h2>
+    <table class="table-2">
+      <tr>
+        <th>Field</th>
+        <th>Information</th>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td><%- info.Name %></td>
+      </tr>
+      <tr>
+        <td>Phone Number</td>
+        <td><%- info.PhoneNumber %></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td><%- info.email %></td>
+      </tr>
+      <tr>
+        <td>DOB</td>
+        <td><%- info.date_of_birth %></td>
+      </tr>
+      <tr>
+        <td>doctor_license_number</td>
+        <td><%- info.doctor_license_number %></td>
+      </tr>
+    </table>
+    <h2>Assitant Doctors</h2>
+    <table class="table-2">
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Doctor License Number</th>
+      </tr>
+      <% for( let index = 0; index < info.assistantDoctor.length; index++ ) { %>
+
+      <tr>
+        <td><%- info.assistantDoctor[index].Name %></td>
+        <td><%- info.assistantDoctor[index].PhoneNumber %></td>
+        <td><%- info.assistantDoctor[index].email %></td>
+        <td><%- info.assistantDoctor[index].date_of_birth %></td>
+        <td><%- info.assistantDoctor[index].doctor_license_number %></td>
+      </tr>
+
+      <% } %>
+    </table>
+
+    <h2>Patients</h2>
+    <table class="table-2">
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Disease</th>
+        <th>Health Description</th>
+        <th>Email Verification</th>
+      </tr>
+      <% for( let index = 0; index < info.Patients.length; index++ ) { %>
+
+      <tr>
+        <td><%- info.Patients[index].Name %></td>
+        <td><%- info.Patients[index].PhoneNumber %></td>
+        <td><%- info.Patients[index].pemail %></td>
+        <td><%- info.Patients[index].date_of_birth %></td>
+        <td><%- info.Patients[index].Disease %></td>
+        <td><%- info.Patients[index].healthDescription%></td>
+        <td><%- info.Patients[index].verification %></td>
+      </tr>
+
+      <% } %>
+    </table>
+
+    <% } %> <% if (type === "Patients") { %>
+
+    <h2>Your Profile</h2>
+    <table class="table-2">
+      <tr>
+        <th>Field</th>
+        <th>Information</th>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td><%- info.Name %></td>
+      </tr>
+      <tr>
+        <td>Phone Number</td>
+        <td><%- info.PhoneNumber %></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td><%- info.email %></td>
+      </tr>
+      <tr>
+        <td>DOB</td>
+        <td><%- info.date_of_birth %></td>
+      </tr>
+      <tr>
+        <td>Disease</td>
+        <td><%- info.Disease %></td>
+      </tr>
+      <tr>
+        <td>Health Description</td>
+        <td><%- info.healthDescription %></td>
+      </tr>
+    </table>
+    <h2>Doctors</h2>
+    <table class="table-2">
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Doctor License Number</th>
+      </tr>
+      <% for( let index = 0; index < info.Doctors.length; index++ ) { %>
+
+      <tr>
+        <td><%- info.Doctors[index].Name %></td>
+        <td><%- info.Doctors[index].PhoneNumber %></td>
+        <td><%- info.Doctors[index].email %></td>
+        <td><%- info.Doctors[index].date_of_birth %></td>
+        <td><%- info.Doctors[index].doctor_license_number %></td>
+      </tr>
+
+      <% } %>
+    </table>
+
+    <h2>Assitant Doctors</h2>
+    <table class="table-2">
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Doctor License Number</th>
+      </tr>
+      <% for( let index = 0; index < info.assistantDoctor.length; index++ ) { %>
+
+      <tr>
+        <td><%- info.assistantDoctor[index].Name %></td>
+        <td><%- info.assistantDoctor[index].PhoneNumber %></td>
+        <td><%- info.assistantDoctor[index].email %></td>
+        <td><%- info.assistantDoctor[index].date_of_birth %></td>
+        <td><%- info.assistantDoctor[index].doctor_license_number %></td>
+      </tr>
+
+      <% } %>
+    </table>
+    <% } %> <% if (type === "assistantDoctor") { %>
+
+    <h2>Your Profile</h2>
+    <table class="table-2">
+      <tr>
+        <th>Field</th>
+        <th>Information</th>
+      </tr>
+      <tr>
+        <td>Name</td>
+        <td><%- info.Name %></td>
+      </tr>
+      <tr>
+        <td>Phone Number</td>
+        <td><%- info.PhoneNumber %></td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td><%- info.email %></td>
+      </tr>
+      <tr>
+        <td>DOB</td>
+        <td><%- info.date_of_birth %></td>
+      </tr>
+      <tr>
+        <td>doctor_license_number</td>
+        <td><%- info.doctor_license_number %></td>
+      </tr>
+    </table>
+    <h2>Doctors</h2>
+    <table class="table-2">
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Doctor License Number</th>
+      </tr>
+      <% for( let index = 0; index < info.Doctors.length; index++ ) { %>
+
+      <tr>
+        <td><%- info.Doctors[index].Name %></td>
+        <td><%- info.Doctors[index].PhoneNumber %></td>
+        <td><%- info.Doctors[index].email %></td>
+        <td><%- info.Doctors[index].date_of_birth %></td>
+        <td><%- info.Doctors[index].doctor_license_number %></td>
+      </tr>
+
+      <% } %>
+    </table>
+
+    <h2>Patients</h2>
+    <table class="table-2">
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>DOB</th>
+        <th>Disease</th>
+        <th>Health Description</th>
+        <th>Email Verification</th>
+      </tr>
+      <% for( let index = 0; index < info.Patients.length; index++ ) { %>
+
+      <tr>
+        <td><%- info.Patients[index].Name %></td>
+        <td><%- info.Patients[index].PhoneNumber %></td>
+        <td><%- info.Patients[index].pemail %></td>
+        <td><%- info.Patients[index].date_of_birth %></td>
+        <td><%- info.Patients[index].Disease %></td>
+        <td><%- info.Patients[index].healthDescription%></td>
+        <td><%- info.Patients[index].verification %></td>
+      </tr>
+
+      <% } %>
+    </table>
+    <% } %>
+    <br />
+    <br />
+    <br />
+  </body>
+</html>

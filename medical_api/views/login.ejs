@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="../../views/style.css">
+</head>
+<body>
+    <div class="log-form">
+        <h2>Login to your account</h2>
+        <div class="form-box">
+          <input type="text" id="email" title="email" placeholder="email" />
+          <input type="password" id="password" title="username" placeholder="password" />
+          <div class="select">
+            <select name="slct" id="slct">
+              <option selected>Select Login Type</option>
+              <option value="assistantDoctor">Assistant Doctor</option>
+              <option value="Doctor">Doctor</option>
+              <option value="Patients">Patient</option>
+            </select>
+          </div>
+          <br>
+          <br>
+
+          <button type="submit" id="login" class="btn">Login</button>
+          <!-- <a class="forgot" href="#">Forgot Username?</a> -->
+        </div>
+      </div>
+    <script>
+        
+          
+          document.getElementById("login").addEventListener("click",()=>{
+            const logincred = {
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value,
+                type: document.getElementById("slct").value,
+              };
+              console.log(logincred)
+              fetch("/apiv1/medical/Login",{
+                  method : "post",
+                  headers : {
+                    'Content-Type': 'application/json'
+                  },
+                  body : JSON.stringify(logincred)
+              }).then((data)=>{
+                  data.json().then((response)=>{
+                      if(response.status === "SUCCESS"){
+                          console.log(response)
+                          window.location.href = "/apiv1/medical/getDetails"
+                      } else {
+                        window.alert(response.message)
+                      }
+                  })
+              })
+          })
+
+
+    </script>
+</body>
+</html>

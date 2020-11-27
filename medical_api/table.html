@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <style>
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="showTable"></div>
+    <script type="text/javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        $.ajax({
+          url: "http://127.0.0.1:4000/apiv1/medical/getsensordata",
+          method: "GET",
+          dataType: "JSON",
+          success: function (data) {
+            console.log(data);
+            const resp = data["sensed"];
+            let output = `
+                <table>
+                    <tr>
+                        <th>#</th>
+                        <th>NAME</th>
+                        <th>ECG</th>
+                        <th>PULSE</th>
+                        <th>TEMP</th>
+                        <th>HUMIDITY</th>
+                        <th>TIME</th>
+                    </tr>
+            `;
+            let j = 0;
+            for (var i = resp.length - 1; i >= 0; i--) {
+              j = j + 1;
+              output += `
+                    <tr>
+                        <td>${j++}</td>
+                        <td>${resp[i].name}</td>
+                        <td>${resp[i].ecg}</td>
+                        <td>${resp[i].pulse}</td>
+                        <td>${resp[i].temperature}</td>
+                        <td>${resp[i].humidity}</td>
+                        <td>${resp[i].timestp}</td>
+                    </tr>
+                `;
+            }
+            output += `
+                </table>
+            `;
+            document.getElementById("showTable").innerHTML = output;
+          },
+        });
+      });
+    </script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  </body>
+</html>

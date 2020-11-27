@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="../../views/style.css" />
+  </head>
+
+  <body>
+    <div class="log-form">
+      <h2>Register here as Doctor</h2>
+      <div class="form-box">
+        <input type="text" id="name" title="Name" placeholder="Name" required />
+        <input
+          type="date"
+          id="date_of_birth"
+          title="date_of_birth"
+          placeholder="Date of Birth"
+          required
+        />
+        <input
+          type="email"
+          id="email"
+          title="email"
+          placeholder="Email Address"
+          required
+        />
+        <input
+          type="text"
+          id="doctor_license_number"
+          title="Doctor_License"
+          placeholder="Doctor License Number"
+          required
+        />
+        <input
+          type="text"
+          id="phone_number"
+          title="phone_number"
+          placeholder="Phone Number"
+          required
+        />
+        <input
+          type="password"
+          id="password"
+          title="username"
+          placeholder="password"
+          required
+        />
+        <br />
+        <br />
+
+        <button type="submit" id="register" class="btn">Register</button>
+        <!-- <a class="forgot" href="#">Forgot Username?</a> -->
+      </div>
+    </div>
+    <script>
+      document.getElementById("register").addEventListener("click", () => {
+        function validateEmail(emailField) {
+          var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+          if (reg.test(emailField) == false) {
+            return false;
+          }
+          return true;
+        }
+        const registerCred = {
+          name: document.getElementById("name").value,
+          date_of_birth: document.getElementById("date_of_birth").value,
+          doctor_license_number: document.getElementById(
+            "doctor_license_number"
+          ).value,
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+          PhoneNumber: document.getElementById("phone_number").value,
+        };
+        if (validateEmail(registerCred.email) === false) {
+          alert("Email is Invalid");
+        } else {
+          console.log(registerCred);
+          fetch("/apiv1/medical/registration", {
+            method: "post",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(registerCred),
+          }).then((data) => {
+            data.json().then((response) => {
+              if (response.status === "success") {
+                alert("Registration Success");
+                window.location.href = "/apiv1/medical/loginPage";
+              } else {
+                window.alert(response.message);
+              }
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
