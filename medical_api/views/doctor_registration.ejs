@@ -50,33 +50,48 @@
         <br />
         <br />
 
-        <button type="submit" id="register" class="btn">Register</button>
+        <button type="submit" id="register" class="btn" onclick="validate()">
+          Register
+        </button>
         <!-- <a class="forgot" href="#">Forgot Username?</a> -->
       </div>
     </div>
     <script>
       document.getElementById("register").addEventListener("click", () => {
-        function validateEmail(emailField) {
-          var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
-          if (reg.test(emailField) == false) {
-            return false;
-          }
-          return true;
-        }
-        const registerCred = {
-          name: document.getElementById("name").value,
-          date_of_birth: document.getElementById("date_of_birth").value,
-          doctor_license_number: document.getElementById(
-            "doctor_license_number"
-          ).value,
-          email: document.getElementById("email").value,
-          password: document.getElementById("password").value,
-          PhoneNumber: document.getElementById("phone_number").value,
-        };
-        if (validateEmail(registerCred.email) === false) {
-          alert("Email is Invalid");
+        var name = document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+        var dob = document.getElementById("date_of_birth").value;
+        var dol = document.getElementById("doctor_license_number").value;
+        var password = document.getElementById("password").value;
+        var phone = document.getElementById("phone_number").value;
+
+        var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        var letters = /^[A-Za-z]+$/;
+        var phoneno = /^\d{10}$/;
+        console.log(dob);
+        if (/^[A-Za-z\s]+$/.test(name) == false) {
+          alert("Please enter valid name.");
+        } else if (name.length > 50) {
+          alert("Name should not be more than 50 characters");
+        } else if (reg.test(email) == false) {
+          alert("Please enter valid email address");
+        } else if (dol.length == 0) {
+          alert("Please enter Doctor license number");
+        } else if (password.length > 50 || password.length == 0) {
+          alert("Please enter valid password");
+        } else if (phoneno.test(phone) == false) {
+          alert("PLease enter valid phone number");
+        } else if (dob.length == 0) {
+          alert("Please select date of birth");
         } else {
-          console.log(registerCred);
+          const registerCred = {
+            Name: name,
+            date_of_birth: dob,
+            doctor_license_number: dol,
+            email: email,
+            password: password,
+            PhoneNumber: phone,
+          };
           fetch("/apiv1/medical/registration", {
             method: "post",
             headers: {
@@ -86,8 +101,11 @@
           }).then((data) => {
             data.json().then((response) => {
               if (response.status === "success") {
-                alert("Registration Success");
+                window.alert("Registration Success");
                 window.location.href = "/apiv1/medical/loginPage";
+                // if (confirm("Registration Success")) {
+                //   document.location.href = "/apiv1/medical/loginPage";
+                // }
               } else {
                 window.alert(response.message);
               }
@@ -95,6 +113,46 @@
           });
         }
       });
+      // document.getElementById("register").addEventListener("click", () => {
+      //   function validateEmail(emailField) {
+      //     var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+      //     if (reg.test(emailField) == false) {
+      //       return false;
+      //     }
+      //     return true;
+      //   }
+      //   const registerCred = {
+      //     name: document.getElementById("name").value,
+      //     date_of_birth: document.getElementById("date_of_birth").value,
+      //     doctor_license_number: document.getElementById(
+      //       "doctor_license_number"
+      //     ).value,
+      //     email: document.getElementById("email").value,
+      //     password: document.getElementById("password").value,
+      //     PhoneNumber: document.getElementById("phone_number").value,
+      //   };
+      //   if (validateEmail(registerCred.email) === false) {
+      //     alert("Email is Invalid");
+      //   } else {
+      //     console.log(registerCred);
+      //     fetch("/apiv1/medical/registration", {
+      //       method: "post",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(registerCred),
+      //     }).then((data) => {
+      //       data.json().then((response) => {
+      //         if (response.status === "success") {
+      //           alert("Registration Success");
+      //           window.location.href = "/apiv1/medical/loginPage";
+      //         } else {
+      //           window.alert(response.message);
+      //         }
+      //       });
+      //     });
+      //   }
+      // });
     </script>
   </body>
 </html>
